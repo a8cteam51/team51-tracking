@@ -19,7 +19,7 @@ function wpcomsp_bilmur_timezone_string() {
 
 	// Handle empty strings.
 	if ( $wp_tz === '' ) {
-    return 'UTC';
+		return 'UTC';
 	}
 
 	// Did we get back an offset?
