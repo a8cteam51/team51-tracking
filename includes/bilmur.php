@@ -17,6 +17,11 @@ if ( ! defined( 'WPCOMSP_BILMUR_TRACKING' ) || ! WPCOMSP_BILMUR_TRACKING ) {
 function wpcomsp_bilmur_timezone_string() {
 	$wp_tz = wp_timezone_string();
 
+	// Handle empty strings.
+	if ( $wp_tz === '' ) {
+    return 'UTC';
+	}
+
 	// Did we get back an offset?
 	if ( preg_match( '/^([+-])?(\d{1,2}):(\d{2})$/', $wp_tz, $matches ) ) {
 		$sign = $matches[1] === '-' ? -1 : 1;
@@ -41,6 +46,14 @@ function wpcomsp_bilmur_timezone_string() {
 		// fractional offset, by simply discarding the fractional part.
 		// This isn't ideal, but there's no standard way of describing
 		// these offsets, and is likely to be an extreme edge case.
+		return 'Etc/GMT' . ( $sign === -1 ? '+' : '-' ) . $hours;
+	}
+
+	// Handle legacy “UTC±N” offsets as well.
+	if ( preg_match( '/^UTC([+-])(\d{1,2})$/i', $wp_tz, $matches ) ) {
+		$sign = $matches[1] === '-' ? -1 : 1;
+		$hours = intval( $matches[2], 10 );
+
 		return 'Etc/GMT' . ( $sign === -1 ? '+' : '-' ) . $hours;
 	}
 
