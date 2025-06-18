@@ -7,6 +7,11 @@ if ( ! defined( 'WPCOMSP_BILMUR_TRACKING' ) || ! WPCOMSP_BILMUR_TRACKING ) {
 	return;
 }
 
+// Only load if a provider and service have been configured.
+if ( ! defined( 'WPCOMSP_BILMUR_PROVIDER' ) || ! defined( 'WPCOMSP_BILMUR_SERVICE' ) ) {
+	return;
+}
+
 // Returns a standardized timezone string.
 //
 // `wp_timezone_string()` sometimes returns offsets (e.g. "-07:00"), which are
@@ -97,10 +102,6 @@ add_action(
 	'wp_footer',
 	function () {
 		$custom_properties = defined( 'WPCOMSP_BILMUR_CUSTOM_PROPERTIES' ) ? WPCOMSP_BILMUR_CUSTOM_PROPERTIES : array();
-
-		if ( ! defined( 'WPCOMSP_BILMUR_PROVIDER' ) || ! defined( 'WPCOMSP_BILMUR_SERVICE' ) ) {
-			return;
-		}
 
 		// Is the WooCommerce plugin active?
 		$woo_active = class_exists( 'WooCommerce' ) ? '1' : '0';
