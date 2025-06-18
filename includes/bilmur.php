@@ -89,6 +89,9 @@ add_action(
 	function() {
 		$custom_properties = defined( 'WPCOMSP_BILMUR_CUSTOM_PROPERTIES' ) ? WPCOMSP_BILMUR_CUSTOM_PROPERTIES : array();
 
+		if ( ! defined( 'WPCOMSP_BILMUR_PROVIDER' ) || ! defined( 'WPCOMSP_BILMUR_SERVICE' ) ) {
+			return;
+		}
 		// Is the WooCommerce plugin active?
 		$woo_active = class_exists( 'WooCommerce' ) ? '1' : '0';
 		$custom_properties['woo_active'] = $woo_active;
