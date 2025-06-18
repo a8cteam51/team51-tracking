@@ -18,20 +18,20 @@ function wpcomsp_bilmur_timezone_string() {
 	$wp_tz = wp_timezone_string();
 
 	// Handle empty strings.
-	if ( $wp_tz === '' ) {
+	if ( '' === $wp_tz ) {
 		return 'UTC';
 	}
 
 	// Did we get back an offset?
 	if ( preg_match( '/^([+-])?(\d{1,2}):(\d{2})$/', $wp_tz, $matches ) ) {
-		$sign = $matches[1] === '-' ? -1 : 1;
-		$hours = intval( $matches[2], 10 );
+		$sign    = '-' === $matches[1] ? -1 : 1;
+		$hours   = intval( $matches[2], 10 );
 		$minutes = intval( $matches[3], 10 );
 
 		// For fractional hour offsets, use `timezone_name_from_abbr` to get a
 		// matching "<Area>/<City>" timezone.
 		if ( $minutes > 0 ) {
-			$offset = $sign * ( $hours * 3600 + $minutes * 60 );
+			$offset  = $sign * ( $hours * 3600 + $minutes * 60 );
 			$city_tz = timezone_name_from_abbr( '', $offset, 0 );
 
 			if ( ! empty( $city_tz ) ) {
@@ -46,15 +46,15 @@ function wpcomsp_bilmur_timezone_string() {
 		// fractional offset, by simply discarding the fractional part.
 		// This isn't ideal, but there's no standard way of describing
 		// these offsets, and is likely to be an extreme edge case.
-		return 'Etc/GMT' . ( $sign === -1 ? '+' : '-' ) . $hours;
+		return 'Etc/GMT' . ( -1 === $sign ? '+' : '-' ) . $hours;
 	}
 
 	// Handle legacy “UTC±N” offsets as well.
 	if ( preg_match( '/^UTC([+-])(\d{1,2})$/i', $wp_tz, $matches ) ) {
-		$sign = $matches[1] === '-' ? -1 : 1;
+		$sign  = '-' === $matches[1] ? -1 : 1;
 		$hours = intval( $matches[2], 10 );
 
-		return 'Etc/GMT' . ( $sign === -1 ? '+' : '-' ) . $hours;
+		return 'Etc/GMT' . ( -1 === $sign ? '+' : '-' ) . $hours;
 	}
 
 	// For anything that's not an offset, return the string we got from WP.
@@ -66,7 +66,7 @@ function wpcomsp_bilmur_timezone_string() {
  */
 add_action(
 	'wp_enqueue_scripts',
-	static function() {
+	static function () {
 		// Request a new version of bilmur every week.
 		// This keeps bilmur up-to-date independently of CDN caching times.
 		$weekly_cachebust = 'm=' . gmdate( 'YW' );
@@ -79,21 +79,32 @@ add_action(
 		// Base URL for bilmur script.
 		$bilmur_url = 'https://s0.wp.com/wp-content/js/bilmur.min.js';
 
-		wp_enqueue_script( 'bilmur', $bilmur_url . '?' . $weekly_cachebust, array(), $manual_version, array( 'strategy' => 'defer', 'in_footer' => true ) );
+		wp_enqueue_script(
+			'bilmur',
+			$bilmur_url . '?' . $weekly_cachebust,
+			array(),
+			$manual_version,
+			array(
+				'strategy'  => 'defer',
+				'in_footer' => true,
+			)
+		);
 	}
 );
 
 // Add bilmur config to page for the script to pick up when it runs.
 add_action(
 	'wp_footer',
-	function() {
+	function () {
 		$custom_properties = defined( 'WPCOMSP_BILMUR_CUSTOM_PROPERTIES' ) ? WPCOMSP_BILMUR_CUSTOM_PROPERTIES : array();
 
 		if ( ! defined( 'WPCOMSP_BILMUR_PROVIDER' ) || ! defined( 'WPCOMSP_BILMUR_SERVICE' ) ) {
 			return;
 		}
+
 		// Is the WooCommerce plugin active?
 		$woo_active = class_exists( 'WooCommerce' ) ? '1' : '0';
+
 		$custom_properties['woo_active'] = $woo_active;
 
 		?>
@@ -101,10 +112,10 @@ add_action(
 				id="bilmur"
 				property="bilmur:data"
 				content=""
-				data-provider="<?php echo esc_attr( WPCOMSP_BILMUR_PROVIDER ) ?>"
-				data-service="<?php echo esc_attr( WPCOMSP_BILMUR_SERVICE ) ?>"
-				data-custom-props="<?php echo esc_attr( wp_json_encode( $custom_properties ) ) ?>"
-				data-site-tz="<?php echo esc_attr( wpcomsp_bilmur_timezone_string() ) ?>"
+				data-provider="<?php echo esc_attr( WPCOMSP_BILMUR_PROVIDER ); ?>"
+				data-service="<?php echo esc_attr( WPCOMSP_BILMUR_SERVICE ); ?>"
+				data-custom-props="<?php echo esc_attr( wp_json_encode( $custom_properties ) ); ?>"
+				data-site-tz="<?php echo esc_attr( wpcomsp_bilmur_timezone_string() ); ?>"
 			>
 		<?php
 	}
