@@ -101,7 +101,7 @@ add_action(
 // beacon with the performance data from being sent.  This looks to see if
 // the WP Rocket plugin is active and when it is adds the `nowprocket`
 // attribute to the bilmur script tag.  This tells WP Rocket to skip trying
-// to delay running this script, which allows use to still collect performance
+// to delay running this script, which allows us to still collect performance
 // data.
 //
 // https://docs.wp-rocket.me/article/1349-delay-javascript-execution
