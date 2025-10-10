@@ -105,19 +105,17 @@ add_action(
 // data.
 //
 // https://docs.wp-rocket.me/article/1349-delay-javascript-execution
-function wpcomsh_bilmur_script_tag( $tag, $handle, $src ) {
-	if ( $handle != 'bilmur' ) {
-		return $tag;
-	}
-
-	$tag = str_replace( 'id="bilmur-js"', 'id="bilmur-js" nowprocket', $tag );
-	return $tag;
+function wpcomsh_bilmur_script_attributes( array $attributes ) {
+    if ( !empty( $attributes['id'] ) && 'bilmur-js' === $attributes['id'] ) {
+        $attributes['nowprocket'] = true;
+    }
+    return $attributes;
 };
 
 function wpcomsh_bilmur_after_plugins() {
 	$all_plugins = get_option( 'active_plugins' );
 	if ( false !== array_search( 'wp-rocket/wp-rocket.php', $all_plugins ) ) {
-		add_filter( 'script_loader_tag', 'wpcomsh_bilmur_script_tag', 10, 3 );
+		add_filter( 'wp_script_attributes', 'wpcomsh_bilmur_script_attributes', 10, 1 );
 	}
 }
 add_action( 'plugins_loaded', 'wpcomsh_bilmur_after_plugins' );
