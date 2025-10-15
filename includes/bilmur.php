@@ -97,6 +97,29 @@ add_action(
 	}
 );
 
+// The WP Rocket feature `Delay JavaScript Execution` prevents the bilmur
+// beacon with the performance data from being sent.  This looks to see if
+// the WP Rocket plugin is active and when it is adds the `nowprocket`
+// attribute to the bilmur script tag.  This tells WP Rocket to skip trying
+// to delay running this script, which allows us to still collect performance
+// data.
+//
+// https://docs.wp-rocket.me/article/1349-delay-javascript-execution
+function wpcomsh_bilmur_script_attributes( array $attributes ) {
+    if ( !empty( $attributes['id'] ) && 'bilmur-js' === $attributes['id'] ) {
+        $attributes['nowprocket'] = true;
+    }
+    return $attributes;
+};
+
+function wpcomsh_bilmur_after_plugins() {
+	$all_plugins = get_option( 'active_plugins' );
+	if ( false !== array_search( 'wp-rocket/wp-rocket.php', $all_plugins ) ) {
+		add_filter( 'wp_script_attributes', 'wpcomsh_bilmur_script_attributes', 10, 1 );
+	}
+}
+add_action( 'plugins_loaded', 'wpcomsh_bilmur_after_plugins' );
+
 // Add bilmur config to page for the script to pick up when it runs.
 add_action(
 	'wp_footer',
