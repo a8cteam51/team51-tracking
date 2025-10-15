@@ -3,7 +3,7 @@
  * The Team51 Tracking plugin bootstrap file.
  *
  * @since       1.0.0
- * @version     1.0.0
+ * @version     1.1.0
  * @author      WordPress.com Special Projects
  * @license     GPL-3.0-or-later
  *
@@ -12,7 +12,7 @@
  * @wordpress-plugin
  * Plugin Name:             Team51 Tracking
  * Description:             Handles automatic opt-in on parter sites to usage tracking for WooCommerce, Sensei, and other plugins/tools used by Team51.
- * Version:                 1.0.0
+ * Version:                 1.1.0
  * Requires at least:       6.1
  * Requires PHP:            8.1
  * Author:                  WordPress.com Special Projects
